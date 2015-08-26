@@ -1,5 +1,9 @@
 DEBUG = 0
 
+ifneq ($(EMSCRIPTEN),)
+   platform = emscripten
+endif
+
 ifeq ($(platform),)
 	platform = unix
 	ifeq ($(shell uname -a),)
@@ -118,6 +122,9 @@ else ifeq ($(platform), psp1)
 	STATIC_LINKING = 1
 	FLAGS += -G0
 
+else ifeq ($(platform), emscripten)
+	TARGET := $(TARGET_NAME)_libretro_emscripten.bc
+
 # Windows
 else
 	TARGET := $(TARGET_NAME)_libretro.dll
@@ -141,7 +148,7 @@ FLAGS += -O2 -DNDEBUG
 endif
 
 LDFLAGS += $(fpic) $(SHARED)
-FLAGS += $(fpic) 
+FLAGS += $(fpic)
 FLAGS += $(INCFLAGS)
 
 ifeq ($(OLD_GCC), 1)
